@@ -48,6 +48,18 @@ Se você quer contribuir, por favor, siga estes passos:
 
 Eu revisarei todos os Pull Requests o mais rápido possível!
 
+## 📸 Screenshots
+
+Aqui estão algumas telas do aplicativo em funcionamento:
+
+![Tela de Conversas](screenshots/tela_conversas.jpg)
+
+![Tela de Chat](screenshots/tela_chat.jpg)
+
+![Tela de Busca](screenshots/tela_seach.jpg)
+
+![Tela de Configurações](screenshots/tala_connfg.jpg)
+
 ### O que você pode fazer para ajudar?
 
 * Corrigir [Bugs (Issues)](https://github.com/o-nevees/Chatting-Messenger-/issues) existentes.
