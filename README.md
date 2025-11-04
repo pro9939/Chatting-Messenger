@@ -73,7 +73,7 @@ Aqui estão algumas telas do aplicativo em funcionamento:
 
 Um agradecimento especial a estas pessoas maravilhosas que ajudaram no projeto:
 
-* **[@basedcatx](https://github.com/basedcatx)** - (Adicione aqui a contribuição, ex: Ajuda com ideias e design)
+* **[@basedcatx](https://github.com/basedcatx)** 
 * 
 ## 📝 Licença
 
