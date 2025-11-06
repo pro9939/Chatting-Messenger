@@ -23,8 +23,18 @@ import com.chatting.dialog.DialogConfig
 import com.chatting.dialog.DialogType
 import com.chatting.ui.screens.MainScreen
 import com.chatting.dialog.DialogButtonConfig
+import com.chatting.websock.WebSocketClient
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var authRepository: AuthRepository
+
+    @Inject
+    lateinit var webSocketClient: WebSocketClient
 
     private var backPressedTime: Long = 0
     private var backToast: Toast? = null
@@ -37,11 +47,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val appContainer = (application as MyApp).appContainer
-        val webSocketClient = appContainer.webSocketClient
-        // Obtém a instância do AuthRepository
-        val authRepository = (application as MyApp).authRepository
 
         requestNotificationPermission()
 

@@ -1,6 +1,5 @@
 package com.chatting.ui.activitys
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
@@ -10,10 +9,28 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,27 +41,26 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewModelScope
 import com.chatting.ui.MainActivity
-import com.chatting.ui.MyApp
-import com.chatting.ui.R
-import com.data.source.local.db.entities.UserEntity
-import com.service.api.ApiService 
-import com.data.repository.AuthRepository
+import com.chatting.ui.theme.MyComposeApplicationTheme
 import com.chatting.ui.utils.SecurePrefs
+import com.data.repository.AuthRepository
+import com.data.source.local.db.entities.UserEntity
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
+import com.google.firebase.messaging.FirebaseMessaging
+import com.service.api.ApiService
+import dagger.hilt.android.AndroidEntryPoint
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.concurrent.TimeUnit
-import com.chatting.ui.theme.MyComposeApplicationTheme
-import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.tasks.await
 
 data class VerificationUiState(
@@ -73,13 +89,17 @@ class VerificationViewModel : ViewModel() {
     }
 }
 
+@AndroidEntryPoint
 class VerifyNumberActivity : ComponentActivity() {
 
     private val viewModel: VerificationViewModel by viewModels()
     private lateinit var firebaseAuth: FirebaseAuth
-    private lateinit var authRepository: AuthRepository 
-    private val apiService: ApiService by lazy { (application as MyApp).appContainer.apiService }
 
+    @Inject
+    lateinit var authRepository: AuthRepository
+
+    @Inject
+    lateinit var apiService: ApiService
 
     private var phoneNumber: String = ""
     private var verificationId: String? = null
@@ -93,7 +113,6 @@ class VerifyNumberActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         SecurePrefs.init(applicationContext)
         firebaseAuth = FirebaseAuth.getInstance()
-        authRepository = (application as MyApp).authRepository
 
         phoneNumber = SecurePrefs.getString("my_number", "") ?: ""
         if (phoneNumber.isEmpty()) {
@@ -170,7 +189,10 @@ class VerifyNumberActivity : ComponentActivity() {
         PhoneAuthProvider.verifyPhoneNumber(options)
     }
 
-    private fun resendVerificationCode(number: String, token: PhoneAuthProvider.ForceResendingToken) {
+    private fun resendVerificationCode(
+        number: String,
+        token: PhoneAuthProvider.ForceResendingToken
+    ) {
         viewModel.setLoading(true)
         val options = PhoneAuthOptions.newBuilder(firebaseAuth)
             .setPhoneNumber(number)
@@ -230,7 +252,8 @@ class VerifyNumberActivity : ComponentActivity() {
         viewModel.setLoading(true)
         lifecycleScope.launch {
             try {
-                val deviceId = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID) ?: ""
+                val deviceId =
+                    Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID) ?: ""
                 val deviceName = "${android.os.Build.MODEL} (${android.os.Build.BRAND})"
                 val fmcToken = getFcmToken()
 
@@ -247,7 +270,10 @@ class VerifyNumberActivity : ComponentActivity() {
 
                 if (response.isSuccessful && body != null && body.status == "success") {
                     val authData = body.data
-                    Log.d(TAG, "Resposta /auth/login: ${body.status}, isNewUser: ${authData?.isNewUser}")
+                    Log.d(
+                        TAG,
+                        "Resposta /auth/login: ${body.status}, isNewUser: ${authData?.isNewUser}"
+                    )
 
                     if (authData?.isNewUser == true) {
                         Log.d(TAG, "Usuário novo detectado. Navegando para CreateProfile.")
@@ -265,7 +291,7 @@ class VerifyNumberActivity : ComponentActivity() {
                                 username2 = userData?.username2 ?: "",
                                 profilePhoto = userData?.profilePhotoFilename ?: "",
                                 lastOnline = null
-                                
+
                             )
 
                             authRepository.onLoginSuccess(
@@ -280,7 +306,10 @@ class VerifyNumberActivity : ComponentActivity() {
                             viewModel.setInfoMessage("Erro: Resposta de login inválida.")
                         }
                     } else {
-                        Log.e(TAG, "Erro: Resposta de login do backend inválida (sem dados de usuário).")
+                        Log.e(
+                            TAG,
+                            "Erro: Resposta de login do backend inválida (sem dados de usuário)."
+                        )
                         viewModel.setInfoMessage("Erro: Resposta de login inválida.")
                     }
                 } else {

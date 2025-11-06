@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlinCompose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlinParcelize)
+    alias(libs.plugins.hilt)
 }
 
 android {
@@ -81,6 +82,11 @@ dependencies {
     implementation(libs.androidx.security.crypto)
     implementation(libs.google.libphonenumber)
     implementation(platform(libs.androidx.compose.bom))
+
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
+
 
     debugImplementation(libs.androidx.compose.ui.tooling)
 }

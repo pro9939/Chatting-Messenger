@@ -3,6 +3,8 @@
 androidGradlePlugin = "8.6.0"
 kotlin = "2.0.0"
 ksp = "2.0.0-1.0.21"
+hilt = "2.51.1"
+hiltNavigationCompose = "1.2.0"
 
 # Google
 googleServices = "4.4.2"
@@ -39,6 +41,11 @@ playServicesAuth = "21.2.0"
 
 
 [libraries]
+# Hilt
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
+hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
+androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+
 # Networking
 retrofit-core = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 retrofit-converterGson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
@@ -133,3 +140,4 @@ kotlinCompose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kot
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlinParcelize = { id = "org.jetbrains.kotlin.plugin.parcelize" }
 protobuf = { id = "com.google.protobuf", version.ref = "protobufPlugin" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }

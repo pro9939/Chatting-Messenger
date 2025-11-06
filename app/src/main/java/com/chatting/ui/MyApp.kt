@@ -6,7 +6,6 @@ import android.util.Log
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
-import com.chatting.di.AppContainer
 import com.chatting.domain.AccountManager
 import com.chatting.domain.MediaManager
 import com.chatting.domain.MessageManager
@@ -17,26 +16,34 @@ import com.chatting.ui.utils.SecurePrefs
 import com.google.firebase.FirebaseApp
 import com.google.firebase.messaging.FirebaseMessaging
 import com.chatting.vibration.VibrationManager
+import com.chatting.websock.WebSocketClient
+import com.chatting.websock.WebSocketMessageHandler
+import dagger.hilt.android.HiltAndroidApp
+import javax.inject.Inject
 
+@HiltAndroidApp
 class MyApp : Application() {
 
-    lateinit var appContainer: AppContainer
-        private set
+    @Inject
+    lateinit var chatRepository: ChatRepository
 
-    val chatRepository: ChatRepository
-        get() = appContainer.chatRepository
+    @Inject
+    lateinit var authRepository: AuthRepository
 
-    val authRepository: AuthRepository
-        get() = appContainer.authRepository
-        
-    val messageManager: MessageManager
-        get() = appContainer.messageManager
-        
-    val mediaManager: MediaManager
-        get() = appContainer.mediaManager
-        
-    val accountManager: AccountManager
-        get() = appContainer.accountManager
+    @Inject
+    lateinit var messageManager: MessageManager
+
+    @Inject
+    lateinit var mediaManager: MediaManager
+
+    @Inject
+    lateinit var accountManager: AccountManager
+
+    @Inject
+    lateinit var webSocketClient: WebSocketClient
+
+    @Inject
+    lateinit var webSocketMessageHandler: WebSocketMessageHandler
 
     companion object {
         private const val TAG = "MyApp"
@@ -50,21 +57,21 @@ class MyApp : Application() {
             if (authRepository.authStateFlow.value == AuthState.LOGGED_IN) {
                 Log.d(TAG, "App in foreground AND Logged In. Attempting WebSocket connection...")
                 try {
-                    appContainer.webSocketClient.connect()
+                    webSocketClient.connect()
                 } catch (e: Exception) {
                     Log.e(TAG, "Error connecting WebSocket onStart", e)
                 }
             } else {
-                 Log.d(TAG, "App in foreground but Logged Out. Skipping WebSocket connection.")
+                Log.d(TAG, "App in foreground but Logged Out. Skipping WebSocket connection.")
             }
         }
 
         override fun onStop(owner: LifecycleOwner) {
             Log.d(TAG, "App in background. Disconnecting WebSocket.")
             try {
-                appContainer.webSocketClient.disconnect()
+                webSocketClient.disconnect()
             } catch (e: Exception) {
-                 Log.e(TAG, "Error disconnecting WebSocket onStop", e)
+                Log.e(TAG, "Error disconnecting WebSocket onStop", e)
             }
         }
     }
@@ -75,12 +82,9 @@ class MyApp : Application() {
 
         SecurePrefs.init(this)
         Log.d(TAG, "SecurePrefs initialized.")
-        
+
         VibrationManager.init(this)
 
-        appContainer = AppContainer(this)
-        Log.d(TAG, "AppContainer created.")
-        
         Thread.setDefaultUncaughtExceptionHandler(ExceptionHandler(this))
         Log.d(TAG, "ExceptionHandler set.")
 
@@ -90,7 +94,7 @@ class MyApp : Application() {
         ThemeManager.init(this)
         Log.d(TAG, "ThemeManager initialized.")
 
-        appContainer.initializeWebSocketListening()
+        webSocketMessageHandler.startListening()
         Log.d(TAG, "WebSocketMessageHandler listener started.")
 
         ProcessLifecycleOwner.get().lifecycle.addObserver(appLifecycleObserver)
