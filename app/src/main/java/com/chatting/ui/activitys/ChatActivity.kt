@@ -80,6 +80,7 @@ import java.util.Locale
 import com.chatting.ui.viewmodel.ChatInputState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.debounce
+import com.chatting.ui.utils.TimeFormat // Importação necessária
 
 sealed interface ChatItem {
     data class Message(val message: MessageEntity) : ChatItem
@@ -413,7 +414,7 @@ fun AttachmentOption(icon: ImageVector, label: String, color: Color, onClick: ()
             Icon(icon, contentDescription = label, tint = Color.White, modifier = Modifier.size(32.dp))
         }
         Spacer(modifier = Modifier.height(8.dp))
-        Text(label, style = MaterialTheme.typography.bodyMedium)
+            Text(label, style = MaterialTheme.typography.bodyMedium)
     }
 }
 
@@ -712,7 +713,7 @@ fun TextMessageContent(message: MessageEntity, fontSize: Dp) {
             modifier = Modifier.align(Alignment.End),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(formatMessageTime(message.timestamp), fontSize = 11.sp, color = textColor.copy(alpha = 0.7f))
+            Text(TimeFormat.getFormattedMessageTime(message.timestamp), fontSize = 11.sp, color = textColor.copy(alpha = 0.7f))
             if (message.isMine) {
                 Spacer(Modifier.width(4.dp))
                 MessageStatusIcon(status = message.status, isMine = message.isMine)
@@ -790,7 +791,7 @@ fun ImageMessageContent(message: MessageEntity, onImageClick: (MessageEntity) ->
                     .padding(horizontal = 8.dp, vertical = 4.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(formatMessageTime(message.timestamp), fontSize = 11.sp, color = Color.White)
+                Text(TimeFormat.getFormattedMessageTime(message.timestamp), fontSize = 11.sp, color = Color.White)
                 if (message.isMine) {
                     Spacer(Modifier.width(4.dp))
                     MessageStatusIcon(status = message.status, isMine = message.isMine)
@@ -866,7 +867,7 @@ fun FileMessageContent(message: MessageEntity, onFileClick: (MessageEntity) -> U
             modifier = Modifier.align(Alignment.End),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(formatMessageTime(message.timestamp), fontSize = 11.sp, color = textColor.copy(alpha = 0.7f))
+            Text(TimeFormat.getFormattedMessageTime(message.timestamp), fontSize = 11.sp, color = textColor.copy(alpha = 0.7f))
             if (message.isMine) {
                 Spacer(Modifier.width(4.dp))
                 MessageStatusIcon(status = message.status, isMine = message.isMine)
@@ -900,14 +901,6 @@ fun MessageStatusIcon(status: String?, isMine: Boolean) {
             modifier = Modifier.size(16.dp)
         )
     }
-}
-
-/**
- * Formata um timestamp para exibição da hora (HH:mm).
- */
-private fun formatMessageTime(timestamp: Long?): String {
-    if (timestamp == null) return ""
-    return SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date(timestamp))
 }
 
 /**

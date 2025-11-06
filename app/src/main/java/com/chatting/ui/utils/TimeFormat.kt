@@ -51,4 +51,14 @@ object TimeFormat {
             else -> SimpleDateFormat("dd 'de' MMMM 'de' yyyy", Locale.getDefault()).format(Date(timestamp))
         }
     }
+
+    /**
+     * NOVO: Formata um timestamp para a hora da mensagem (HH:mm).
+     */
+    @JvmStatic
+    fun getFormattedMessageTime(timestamp: Long?): String {
+        if (timestamp == null) return ""
+        // Formato simples de hora (ex: 10:45)
+        return SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date(timestamp))
+    }
 }
